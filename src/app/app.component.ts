@@ -10,13 +10,22 @@ export class AppComponent {
   convertedBranchName: string;
 
   doConvert() {
-    const prNameParams = this.prName.split('\n');
-    const ticketId = prNameParams[0];
-    delete prNameParams[0];
-    const ticketName = prNameParams.join(' ').trim().toLowerCase()
-      .replace(/\n/g, '-')
-      .replace(/ /g, '-')
-      .replace(/\./g, '');
+    const tempString = this.removeSpecialCharacters(this.prName)
+                           .replace(/[\n ]/g, '-');
+    const tempStringSplitParams = tempString.split('-');
+    // First two params is ticket id
+    const ticketId = tempStringSplitParams.splice(0, 2).join('-');
+    // The rest of the params is ticketname which should be lower case
+    const ticketName = tempStringSplitParams.join('-').toLowerCase();
     this.convertedBranchName = `${ticketId}-${ticketName}`;
+  }
+
+  /**
+   * Remove all special characters in a string
+   * @param {string} inputString
+   * @returns {string}
+   */
+  removeSpecialCharacters(inputString: string) {
+    return inputString.replace(/[^[a-zA-Z0-9\-\n ]/g, '');
   }
 }
